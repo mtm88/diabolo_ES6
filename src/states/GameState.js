@@ -5,10 +5,10 @@ class GameState extends Phaser.State {
   create() {
     this.map = this.game.add.tilemap('level2');
 
-    // the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
+    // // the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
     this.map.addTilesetImage('roguelikeSheet_transparent', 'gameTiles');
 
-    // create layer
+    // // create layer
     this.ground = this.map.createLayer('ground');
     this.ground_two = this.map.createLayer('ground_two');
     this.house_bottoms = this.map.createLayer('house_bottoms');
@@ -52,8 +52,87 @@ class GameState extends Phaser.State {
     // move player with cursor keys
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
-    // this.game.add.audio('diablo-tristram').play();
+    this.game.add.audio('diablo-tristram').play();
   }
+
+  update() {
+    this.playerMovement();
+    this.collisions();
+  }
+
+  collisions() {
+    this.game.physics.arcade.collide(this.player, this.house_bottoms);
+    this.game.physics.arcade.collide(this.player, this.trees);
+  }
+
+  playerMovement() {
+    this.player.body.velocity.y = 0;
+    this.player.body.velocity.x = 0;
+
+    if (this.cursors.up.isDown) {
+      this.player.body.velocity.y -= 150;
+      if (this.cursors.right.isDown) this.player.animations.play('right');
+      else if (this.cursors.left.isDown) this.player.animations.play('left');
+      else this.player.animations.play('up');
+    } else if (this.cursors.down.isDown) {
+      this.player.body.velocity.y += 150;
+      if (this.cursors.right.isDown) this.player.animations.play('right');
+      else if (this.cursors.left.isDown) this.player.animations.play('left');
+      else this.player.animations.play('down');
+    } else if (!this.cursors.left.isDown && !this.cursors.right.isDown) {
+      this.player.animations.stop();
+    }
+
+    if (this.cursors.left.isDown) {
+      this.player.body.velocity.x -= 150;
+      this.player.animations.play('left');
+    } else if (this.cursors.right.isDown) {
+      this.player.body.velocity.x += 150;
+      this.player.animations.play('right');
+    } else if (!this.cursors.up.isDown && !this.cursors.down.isDown) {
+      this.player.animations.stop();
+    }
+  }
+
+
+  // find objects in a Tiled layer that containt a property called "type" equal to a certain value
+  findObjectsByType(type, map, layer) {
+    const result = [];
+    map.objects[layer].forEach((element) => {
+      if (element.properties.type === type) {
+        // Phaser uses top left, Tiled bottom left so we have to adjust the y position
+        // also keep in mind that the cup images are a bit smaller than the tile which is 16x16
+        // so they might not be placed in the exact pixel position as in Tiled
+        element.y -= map.tileHeight;
+        result.push(element);
+      }
+    });
+    return result;
+  }
+
+  // create a sprite from an object
+  createFromTiledObject(element, group) {
+    const sprite = group.create(element.x, element.y, element.properties.sprite);
+    // copy all properties to the sprite
+    Object.keys(element.properties).forEach((key) => {
+      sprite[key] = element.properties[key];
+    });
+    return sprite;
+  }
+
+  createHouseDoors() {
+    this.doors = this.game.add.group();
+    this.doors.enableBody = true;
+    const result = this.findObjectsByType('doors', this.map, 'houseDoors');
+    const doors = this.createFromTiledObject(result[0], this.doors);
+    doors.anchor.setTo(0, 0.48);
+
+    // in case there's more then 1 doors
+    // result.forEach(function (element) {
+    //   this.createFromTiledObject(element, this.doors);
+    // }, this);
+  }
+
 
 }
 

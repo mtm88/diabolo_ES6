@@ -7,8 +7,10 @@ class Game extends Phaser.Game {
     super(500, 500, Phaser.AUTO, 'content', null);
     this.state.add('Preload', Preload, false);
     this.state.add('GameState', GameState, false);
-    this.state.start('GameState');
+    this.state.start('Preload');
   }
 }
+
+
 
 new Game();
