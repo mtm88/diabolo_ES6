@@ -19,6 +19,11 @@
     "browser-sync": "^2.12.3",
     "browserify": "^13.0.0",
     "del": "^2.2.0",
+    "eslint": "^3.8.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
@@ -29,6 +34,8 @@
     "yargs": "^4.6.0"
   },
   "dependencies": {
+    "eslint": "^3.8.0",
+    "eslint-plugin-import": "^2.0.1",
     "phaser": "^2.4.7"
   }
 }
