@@ -1,6 +1,7 @@
 import GameState from 'states/GameState';
 import Preload from 'states/Preload';
 
+
 class Game extends Phaser.Game {
 
   constructor() {
@@ -10,6 +11,7 @@ class Game extends Phaser.Game {
     this.state.start('Preload');
   }
 }
+
 
 
 

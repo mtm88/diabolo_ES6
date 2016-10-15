@@ -10,7 +10,6 @@ class Preload extends Phaser.State {
 
     // load game assets
 
-    // const map = new Tilemap(this.game, 'level2', )
     this.load.tilemap('level2', './assets/tilesets/level2.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.load.image('gameTiles', './assets/images/roguelike-pack/Spritesheet/roguelikeSheet_transparent.png');
@@ -19,7 +18,7 @@ class Preload extends Phaser.State {
     // // player animation spritesheet
     this.load.spritesheet('player', 'assets/images/ranger_f.png', 24, 32);
     // // soundtrack
-    this.load.audio('diablo-tristram', 'assets/music/02-tristram.mp3');
+    this.load.audio('diablo-tristram', 'assets/music/oldultima-stones.mp3');
   }
 
 
