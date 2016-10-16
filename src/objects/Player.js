@@ -33,34 +33,7 @@ class Player extends Phaser.Sprite {
     });
   }
 
-  playerMovement() {
-    this.body.velocity.y = 0;
-    this.body.velocity.x = 0;
 
-    if (this.cursors.up.isDown) {
-      this.body.velocity.y -= 50;
-      if (this.cursors.right.isDown) this.animations.play('right');
-      else if (this.cursors.left.isDown) this.animations.play('left');
-      else this.animations.play('up');
-    } else if (this.cursors.down.isDown) {
-      this.body.velocity.y += 50;
-      if (this.cursors.right.isDown) this.animations.play('right');
-      else if (this.cursors.left.isDown) this.animations.play('left');
-      else this.animations.play('down');
-    } else if (!this.cursors.left.isDown && !this.cursors.right.isDown) {
-      this.animations.stop();
-    }
-
-    if (this.cursors.left.isDown) {
-      this.body.velocity.x -= 50;
-      this.animations.play('left');
-    } else if (this.cursors.right.isDown) {
-      this.body.velocity.x += 50;
-      this.animations.play('right');
-    } else if (!this.cursors.up.isDown && !this.cursors.down.isDown) {
-      this.animations.stop();
-    }
-  }
 
 }
 

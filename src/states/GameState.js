@@ -8,12 +8,6 @@ class GameState extends Phaser.State {
 
   create() {
 
-    const client = mqtt.connect('mqtt://localhost:1883');
-
-    client.on('connect', () => {
-      console.log('connected!');
-    });
-
     this.map = this.game.add.tilemap('level2');
 
     // // the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
@@ -38,8 +32,8 @@ class GameState extends Phaser.State {
 
     // create player
     const playerSpawn = this.findObjectsByType('playerStart', this.map, 'playerStart');
-    this.objectsToCollide = [this.house_bottoms, this.trees];
     this.player = new Player(this.game, playerSpawn[0].x, playerSpawn[0].y, 'player');
+    this.objectsToCollide = [this.house_bottoms, this.trees];
 
     // this changes the order layers are rendered so player goes underneath the trees etc.
     this.game.world.swap(this.house_tops, this.player);
@@ -47,19 +41,67 @@ class GameState extends Phaser.State {
     this.game.world.swap(this.houseBottom, this.houseTop);
 
 
+    this.mqtt = mqtt.connect('mqtt://localhost:1887');
+    const mq = this.mqtt;
+    mq.on('connect', () => {
+      console.log('connected!');
+
+      const tempRandomId = Math.floor((Math.random() * 10000) + 1);
+
+      mq.subscribe(`newPlayer${tempRandomId}`);
+
+      mq.on('message', (topic, payload) => {
+        if (topic === `newPlayer${tempRandomId}`) {
+          this.player.id = payload.toString();
+          mq.subscribe('players');
+          mq.publish('players', JSON.stringify({ playerId: this.player.id, position: { x: this.player.x, y: this.player.y } }));
+        }
+      });
+    });
+
+
     // this.game.physics.arcade.enable(this.player);
 
     // the camera will follow the player in the world
     // this.game.camera.follow(this.player);
 
-    this.game.add.audio('diablo-tristram').play();
+    // this.game.add.audio('diablo-tristram').play();
   }
 
   update() {
-    this.player.playerMovement();
+    this.playerMovement();
     this.player.collisions(this.objectsToCollide);
   }
 
+  playerMovement() {
+    this.player.body.velocity.y = 0;
+    this.player.body.velocity.x = 0;
+    this.mqtt.publish('players', JSON.stringify({ playerId: this.player.id, position: { x: this.player.x, y: this.player.y } }));
+
+    if (this.player.cursors.up.isDown) {
+      this.player.body.velocity.y -= 50;
+      if (this.player.cursors.right.isDown) this.player.animations.play('right');
+      else if (this.player.cursors.left.isDown) this.player.animations.play('left');
+      else this.player.animations.play('up');
+    } else if (this.player.cursors.down.isDown) {
+      this.player.body.velocity.y += 50;
+      if (this.player.cursors.right.isDown) this.player.animations.play('right');
+      else if (this.player.cursors.left.isDown) this.player.animations.play('left');
+      else this.player.animations.play('down');
+    } else if (!this.player.cursors.left.isDown && !this.player.cursors.right.isDown) {
+      this.player.animations.stop();
+    }
+
+    if (this.player.cursors.left.isDown) {
+      this.player.body.velocity.x -= 50;
+      this.player.animations.play('left');
+    } else if (this.player.cursors.right.isDown) {
+      this.player.body.velocity.x += 50;
+      this.player.animations.play('right');
+    } else if (!this.player.cursors.up.isDown && !this.player.cursors.down.isDown) {
+      this.player.animations.stop();
+    }
+  }
 
   // find objects in a Tiled layer that containt a property called "type" equal to a certain value
   findObjectsByType(type, map, layer) {
