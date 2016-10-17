@@ -163,6 +163,10 @@ gulp.task('serve', ['build'], serve);
 gulp.task('watch-js', ['fastBuild'], browserSync.reload); // Rebuilds and reloads the project when executed.
 gulp.task('watch-static', ['copyPhaser'], browserSync.reload);
 
+gulp.task('heroku:production', () => {
+    console.log('hello'); // the task does not need to do anything.
+});
+
 /**
  * The tasks are executed in the following order:
  * 'cleanBuild' -> 'copyStatic' -> 'copyPhaser' -> 'build' -> 'serve'
