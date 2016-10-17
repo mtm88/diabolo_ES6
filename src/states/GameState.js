@@ -46,17 +46,26 @@ class GameState extends Phaser.State {
     mq.on('connect', () => {
       console.log('connected!');
 
-      const tempRandomId = Math.floor((Math.random() * 10000) + 1);
+      const tempPlayerName = `newPlayer${Math.floor((Math.random() * 10000) + 1)}`;
 
-      mq.subscribe(`newPlayer${tempRandomId}`);
+      mq.subscribe(tempPlayerName);
 
       mq.on('message', (topic, payload) => {
-        if (topic === `newPlayer${tempRandomId}`) {
+        if (topic === tempPlayerName) {
           this.player.id = payload.toString();
+          mq.unsubscribe(tempPlayerName);
           mq.subscribe('players');
           mq.publish('players', JSON.stringify({ playerId: this.player.id, position: { x: this.player.x, y: this.player.y } }));
         }
+
+        if (topic === 'players') {
+          const player = payload.toString();
+          console.log(payload.toString());
+        }
+
       });
+
+
     });
 
 
