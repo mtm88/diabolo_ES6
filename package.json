@@ -4,9 +4,8 @@
   "description": "Tiny flexible template for writing Phaser games in ES6/ES2015 with Babel.",
   "main": "src/index.js",
   "scripts": {
-    "start": "gulp",
-    "production": "gulp --production",
-    "heroku-postbuild": "npm start production"
+    "start": "npm start",
+    "production": "npm start production"
   },
   "repository": {
     "type": "git",
@@ -14,19 +13,18 @@
   },
   "author": "Daniel Belohlavek",
   "license": "MIT",
-  "devDependencies": {
-    "eslint": "^3.8.0",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-import": "^2.0.1",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.4.1"
-  },
+  "devDependencies": {},
   "dependencies": {
     "babel-preset-es2015": "^6.6.0",
     "babelify": "^7.2.0",
     "browser-sync": "^2.12.3",
     "browserify": "^13.0.0",
     "del": "^2.2.0",
+    "eslint": "^3.8.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "exorcist": "^0.4.0",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
